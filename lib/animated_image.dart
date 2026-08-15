@@ -1,5 +1,5 @@
 /// Modified the [Image] widget from
-/// https://github.com/flutter/flutter/blob/3.41.4/packages/flutter/lib/src/widgets/image.dart
+/// https://github.com/flutter/flutter/blob/3.47.0/packages/flutter/lib/src/widgets/image.dart
 /// so that it does not pause the animation of the image even if animations are
 /// disabled via [MediaQueryData.disableAnimations].
 library;
@@ -11,9 +11,9 @@ library;
 import 'dart:io' show File;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
+import 'package:flutter/widgets.dart';
 
 /// A widget that displays an image.
 ///
@@ -123,10 +123,6 @@ class AnimatedImage extends StatefulWidget {
   ///
   /// To show an image from the network or from an asset bundle, consider using
   /// [Image.network] and [Image.asset] respectively.
-  ///
-  /// The `scale` argument specifies the linear scale factor for drawing this
-  /// image at its intended size and applies to both the width and the height.
-  /// {@macro flutter.painting.imageInfo.scale}
   ///
   /// Either the [width] and [height] arguments should be specified, or the
   /// widget should be placed in a context that sets tight layout constraints.
@@ -1068,6 +1064,8 @@ class _AnimatedImageState extends State<AnimatedImage>
                 }());
               }
             : null,
+        // Only suppress error reporting when errorBuilder is provided.
+        reportErrors: widget.errorBuilder == null,
       );
     }
     return _imageStreamListener!;
