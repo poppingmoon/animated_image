@@ -1,5 +1,5 @@
 /// Modified the [Image] widget from
-/// https://github.com/flutter/flutter/blob/3.47.0/packages/flutter/lib/src/widgets/image.dart
+/// https://github.com/flutter/flutter/blob/3.50.0/packages/flutter/lib/src/widgets/image.dart
 /// so that it does not pause the animation of the image even if animations are
 /// disabled via [MediaQueryData.disableAnimations].
 library;
@@ -184,6 +184,11 @@ class AnimatedImage extends StatefulWidget {
   /// regardless of these parameters. These parameters are primarily intended
   /// to reduce the memory usage of [ImageCache].
   ///
+  /// If [useLogicalCacheSize] is true, [cacheWidth] and [cacheHeight] are
+  /// interpreted as logical pixels instead of physical pixels. Set this to
+  /// true when [cacheWidth] and [cacheHeight] describe the image's on-screen
+  /// size in logical pixels.
+  ///
   /// In the case where the network image is on the Web platform, the [cacheWidth]
   /// and [cacheHeight] parameters are ignored as the web engine delegates
   /// image decoding to the web which does not support custom decode sizes.
@@ -247,6 +252,7 @@ class AnimatedImage extends StatefulWidget {
     Map<String, String>? headers,
     int? cacheWidth,
     int? cacheHeight,
+    bool useLogicalCacheSize = false,
     WebHtmlElementStrategy webHtmlElementStrategy =
         WebHtmlElementStrategy.never,
   }) : image = ResizeImage.resizeIfNeeded(
@@ -258,6 +264,7 @@ class AnimatedImage extends StatefulWidget {
            headers: headers,
            webHtmlElementStrategy: webHtmlElementStrategy,
          ),
+         useLogicalSize: useLogicalCacheSize,
        ),
        assert(cacheWidth == null || cacheWidth > 0),
        assert(cacheHeight == null || cacheHeight > 0);
@@ -285,6 +292,11 @@ class AnimatedImage extends StatefulWidget {
   /// will be rendered to the constraints of the layout or [width] and [height]
   /// regardless of these parameters. These parameters are primarily intended
   /// to reduce the memory usage of [ImageCache].
+  ///
+  /// If [useLogicalCacheSize] is true, [cacheWidth] and [cacheHeight] are
+  /// interpreted as logical pixels instead of physical pixels. Set this to
+  /// true when [cacheWidth] and [cacheHeight] describe the image's on-screen
+  /// size in logical pixels.
   ///
   /// Loading an image from a file creates an in memory copy of the file,
   /// which is retained in the [ImageCache]. The underlying file is not
@@ -318,6 +330,7 @@ class AnimatedImage extends StatefulWidget {
     this.disableAnimations = false,
     int? cacheWidth,
     int? cacheHeight,
+    bool useLogicalCacheSize = false,
   }) : // FileImage is not supported on Flutter Web therefore neither this method.
        assert(
          !kIsWeb,
@@ -328,6 +341,7 @@ class AnimatedImage extends StatefulWidget {
          cacheWidth,
          cacheHeight,
          FileImage(file, scale: scale),
+         useLogicalSize: useLogicalCacheSize,
        ),
        loadingBuilder = null,
        assert(cacheWidth == null || cacheWidth > 0),
@@ -370,6 +384,11 @@ class AnimatedImage extends StatefulWidget {
   /// will be rendered to the constraints of the layout or [width] and [height]
   /// regardless of these parameters. These parameters are primarily intended
   /// to reduce the memory usage of [ImageCache].
+  ///
+  /// If [useLogicalCacheSize] is true, [cacheWidth] and [cacheHeight] are
+  /// interpreted as logical pixels instead of physical pixels. Set this to
+  /// true when [cacheWidth] and [cacheHeight] describe the image's on-screen
+  /// size in logical pixels.
   ///
   /// Either the [width] and [height] arguments should be specified, or the
   /// widget should be placed in a context that sets tight layout constraints.
@@ -486,6 +505,7 @@ class AnimatedImage extends StatefulWidget {
     this.disableAnimations = false,
     int? cacheWidth,
     int? cacheHeight,
+    bool useLogicalCacheSize = false,
   }) : image = ResizeImage.resizeIfNeeded(
          cacheWidth,
          cacheHeight,
@@ -497,6 +517,7 @@ class AnimatedImage extends StatefulWidget {
                  package: package,
                )
              : AssetImage(name, bundle: bundle, package: package),
+         useLogicalSize: useLogicalCacheSize,
        ),
        loadingBuilder = null,
        assert(cacheWidth == null || cacheWidth > 0),
@@ -530,6 +551,11 @@ class AnimatedImage extends StatefulWidget {
   /// will be rendered to the constraints of the layout or [width] and [height]
   /// regardless of these parameters. These parameters are primarily intended
   /// to reduce the memory usage of [ImageCache].
+  ///
+  /// If [useLogicalCacheSize] is true, [cacheWidth] and [cacheHeight] are
+  /// interpreted as logical pixels instead of physical pixels. Set this to
+  /// true when [cacheWidth] and [cacheHeight] describe the image's on-screen
+  /// size in logical pixels.
   AnimatedImage.memory(
     Uint8List bytes, {
     super.key,
@@ -554,10 +580,12 @@ class AnimatedImage extends StatefulWidget {
     this.disableAnimations = false,
     int? cacheWidth,
     int? cacheHeight,
+    bool useLogicalCacheSize = false,
   }) : image = ResizeImage.resizeIfNeeded(
          cacheWidth,
          cacheHeight,
          MemoryImage(bytes, scale: scale),
+         useLogicalSize: useLogicalCacheSize,
        ),
        loadingBuilder = null,
        assert(cacheWidth == null || cacheWidth > 0),
